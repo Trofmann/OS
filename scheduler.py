@@ -17,3 +17,6 @@ class Scheduler(object):
         """Пересортировка процессов"""
         # TODO: сделать в соответствии с вариантом
         pass
+
+
+scheduler = Scheduler()

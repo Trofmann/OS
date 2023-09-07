@@ -1,3 +1,6 @@
+from scheduler import scheduler
+
+
 class CPU(object):
     """Процессор"""
 
