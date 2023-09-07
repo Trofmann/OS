@@ -1,3 +1,5 @@
+import random
+
 from task import Task, TaskFabric
 
 
@@ -7,9 +9,10 @@ class Process(object):
     STATE_READY = 2
     STATE_BLOCKED = 3
 
-    def __init__(self, task: Task, state: int = STATE_READY):
+    def __init__(self, task: Task, priority: int, state: int = STATE_READY):
         self.task = task
         self.state = state
+        self.priority = priority
 
     def check_state(self, state: int) -> bool:
         return self.state == state
@@ -31,4 +34,5 @@ class ProcessFabric(object):
     @staticmethod
     def generate_random() -> Process:
         task_ = TaskFabric.generate_random()
-        return Process(task_)
+        priority = random.randint(1, 100)
+        return Process(task_, priority=priority)
