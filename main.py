@@ -1,5 +1,5 @@
 import sys
-
+import logic
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import *
 
@@ -62,7 +62,8 @@ class OS(QWidget):  # главное окно
 
     @pyqtSlot()
     def load_new_task(self):
-        print('Загрузка нового задания')
+        """Загрузка новой задачи"""
+        logic.load_new_task()
 
     @pyqtSlot()
     def increase_speed(self):

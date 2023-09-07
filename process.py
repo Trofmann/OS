@@ -1,4 +1,4 @@
-from task import Task
+from task import Task, TaskFabric
 
 
 class Process(object):
@@ -25,3 +25,10 @@ class Process(object):
     @property
     def is_blocked(self) -> bool:
         return self.check_state(self.STATE_BLOCKED)
+
+
+class ProcessFabric(object):
+    @staticmethod
+    def generate_random() -> Process:
+        task_ = TaskFabric.generate_random()
+        return Process(task_)

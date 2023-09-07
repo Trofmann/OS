@@ -1,5 +1,5 @@
 from typing import List
-from process import Process
+from process import Process, ProcessFabric
 
 
 class Scheduler(object):
