@@ -32,7 +32,7 @@ class Command(object):
 class CommandFabric(object):
     @staticmethod
     def generate_random() -> Command:
-        type_ = random.choices([Command.TYPE_COMPUTE, Command.TYPE_INPUT_OUTPUT, Command.TYPE_STOP])
+        type_ = random.choice([Command.TYPE_COMPUTE, Command.TYPE_INPUT_OUTPUT]) # Стоп-команда будет последней
         return Command(type_=type_)
 
     @staticmethod

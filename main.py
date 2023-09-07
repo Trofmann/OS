@@ -26,10 +26,10 @@ class OS(QWidget):  # главное окно
         self.init_os_button.setToolTip('Начать работу ОС')
         self.init_os_button.clicked.connect(self.start_os)
 
-        self.load_new_task_button = QPushButton('Загрузить новое задание', self)
+        self.load_new_task_button = QPushButton('Загрузить новую задачу', self)
         self.load_new_task_button.move(50, 130)
         self.load_new_task_button.setFixedWidth(200)
-        self.load_new_task_button.setToolTip('Загрузить новое задание')
+        self.load_new_task_button.setToolTip('Загрузить новую задачу')
         self.load_new_task_button.clicked.connect(self.load_new_task)
 
         self.increase_speed_button = QPushButton('Увеличить скорость ОС', self)
