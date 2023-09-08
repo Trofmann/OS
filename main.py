@@ -1,8 +1,11 @@
 import sys
-import logic
+
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import *
+
+import logic
 from system import system
+from utils import from_bytes_to_megabytes
 
 
 class OS(QMainWindow):  # главное окно
@@ -57,10 +60,29 @@ class OS(QMainWindow):  # главное окно
         self.stop_modeling_button.setToolTip('Завершить моделирование')
         self.stop_modeling_button.clicked.connect(self.stop_modeling)
 
+        self.speed_label = QLabel('Скорость: ', self)
+        self.speed_label.move(600, 50)
+        self.speed_label.setFixedWidth(300)
+
+        self.used_memory_label = QLabel(f'Используемая память: ', self)
+        self.used_memory_label.move(600, 80)
+        self.used_memory_label.setFixedWidth(300)
+
+        self.system_info_labels = [
+            self.speed_label,
+            self.used_memory_label
+        ]
+
+        # Изначально система не запущена, а значит информацию видеть не должны
+        for label in self.system_info_labels:
+            label.setVisible(False)
+
     @pyqtSlot()
     def start_os(self):
-        system.start()
-        print('Начата работа ОС')
+        if not system.is_running:
+            system.tact_completed.connect(self.redraw_info_label)
+            system.start()
+            print('Начата работа ОС')
 
     @pyqtSlot()
     def load_new_task(self):
@@ -81,6 +103,16 @@ class OS(QMainWindow):  # главное окно
     @pyqtSlot()
     def change_input_data(self):
         print('Изменение входных данных')
+
+    @pyqtSlot()
+    def redraw_info_label(self):
+        self.speed_label.setText(f'Скорость: {system.speed} миллисекунд на тик')
+        self.speed_label.setVisible(True)
+
+        used_memory = from_bytes_to_megabytes(system.get_used_memory())
+
+        self.used_memory_label.setText(f'Используемая память: {used_memory} МБ')
+        self.used_memory_label.setVisible(True)
 
     @pyqtSlot()
     def stop_modeling(self):
