@@ -63,22 +63,19 @@ class OS(QMainWindow):  # главное окно
         print('Начата работа ОС')
 
     @pyqtSlot()
-    def report_progress(self):
-        print(system.val)
-
-    @pyqtSlot()
     def load_new_task(self):
         """Загрузка новой задачи"""
         logic.load_new_task()
 
     @pyqtSlot()
     def increase_speed(self):
-        print(system.val)
-        print('Увеличение скорости')
+        system.increase_speed()
+        print(f'{system.speed} миллисекунд на тик')
 
     @pyqtSlot()
     def decrease_speed(self):
-        print('Уменьшение скорости')
+        system.decrease_speed()
+        print(f'{system.speed} миллисекунд на тик')
 
     @pyqtSlot()
     def change_input_data(self):
