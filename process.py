@@ -17,6 +17,11 @@ class Process(object):
     def check_state(self, state: int) -> bool:
         return self.state == state
 
+    def get_used_memory(self) -> int:
+        """Получение используемой памяти"""
+        # Используемая память процесса есть сумма занимаемой памяти всех команд
+        return sum([comm.size for comm in self.task.commands])
+
     @property
     def is_active(self) -> bool:
         return self.check_state(self.STATE_ACTIVE)

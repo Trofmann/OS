@@ -30,6 +30,11 @@ class System(QThread):
         # Уменьшение скорости соответствует увеличению количества миллисекунд на тик
         self.speed = max(int((1 + self.speed_factor) * self.speed), 1)
 
+    def get_empty_memory(self):
+        """Получение свободной памяти"""
+        used_memory = self.cpu.get_used_memory()
+        return self.memory - used_memory
+
 
 system = System(
     memory=from_megabytes_to_bytes(75),
