@@ -2,9 +2,10 @@ import sys
 import logic
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import *
+from system import system
 
 
-class OS(QWidget):  # главное окно
+class OS(QMainWindow):  # главное окно
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setup_ui()
@@ -58,7 +59,12 @@ class OS(QWidget):  # главное окно
 
     @pyqtSlot()
     def start_os(self):
+        system.start()
         print('Начата работа ОС')
+
+    @pyqtSlot()
+    def report_progress(self):
+        print(system.val)
 
     @pyqtSlot()
     def load_new_task(self):
@@ -67,6 +73,7 @@ class OS(QWidget):  # главное окно
 
     @pyqtSlot()
     def increase_speed(self):
+        print(system.val)
         print('Увеличение скорости')
 
     @pyqtSlot()
@@ -85,4 +92,5 @@ class OS(QWidget):  # главное окно
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     ex = OS()
+    ex.show()
     sys.exit(app.exec_())
