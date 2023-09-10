@@ -21,5 +21,13 @@ class Scheduler(object):
         # TODO: сделать в соответствии с вариантом
         pass
 
+    def get_performing_process(self):
+        """Получить процесс для исполнения"""
+        # TODO: придумать, в какой момент удалять завершившиеся процессы
+        if self._processes:
+            # Пока заглушка в виде первого процесса
+            return self._processes[0]
+        return None
+
 
 scheduler = Scheduler()

@@ -9,6 +9,19 @@ class Task(object):
     def __init__(self, commands: List[Command]):
         self.commands = commands
 
+    def perform_tact(self):
+        """Выполнение такта"""
+        self.commands[0].tacts_left -= 1
+        # Команда завершила своё исполнение, удалим её из задачи
+        if self.commands[0].tacts_left == 0:
+            self.commands.pop(0)
+
+    @property
+    def is_finished(self):
+        """Признак завершения задачи"""
+        # Задача завершена, если нет команд для выполнения
+        return not bool(self.commands)
+
 
 class TaskFabric(object):
     @staticmethod

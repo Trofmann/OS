@@ -34,6 +34,15 @@ class Process(object):
     def is_blocked(self) -> bool:
         return self.check_state(self.STATE_BLOCKED)
 
+    def perform_tact(self):
+        """Выполнение такта"""
+        self.task.perform_tact()
+
+    @property
+    def is_finished(self):
+        """Признак завершения процесса"""
+        return self.task.is_finished
+
 
 class ProcessFabric(object):
     @staticmethod

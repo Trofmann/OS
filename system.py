@@ -1,3 +1,5 @@
+import time
+
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from cpu import CPU
@@ -21,7 +23,8 @@ class System(QThread):
     def run(self) -> None:
         """Запуск системы"""
         while True:
-            # time.sleep(1)
+            time.sleep(self.speed / 1000)  # Такт
+            self.cpu.perform_tact()
             self.tact_completed.emit()
 
     def increase_speed(self) -> None:
