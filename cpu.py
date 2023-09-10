@@ -18,3 +18,4 @@ class CPU(object):
         process = scheduler.get_performing_process()
         if process:
             process.perform_tact()
+            scheduler.remove_finished_processes()

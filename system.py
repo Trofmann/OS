@@ -25,7 +25,7 @@ class System(QThread):
         while True:
             time.sleep(self.speed / 1000)  # Такт
             self.cpu.perform_tact()
-            self.tact_completed.emit() # Отправляем
+            self.tact_completed.emit()  # Отправляем
 
     def increase_speed(self) -> None:
         """Увеличение скорости"""

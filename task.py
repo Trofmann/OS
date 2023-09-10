@@ -13,7 +13,7 @@ class Task(object):
         """Выполнение такта"""
         self.commands[0].tacts_left -= 1
         # Команда завершила своё исполнение, удалим её из задачи
-        if self.commands[0].tacts_left == 0:
+        if self.commands[0].tacts_left <= 0:  # Для стоп-команды
             self.commands.pop(0)
 
     @property
