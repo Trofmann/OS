@@ -30,7 +30,7 @@ class System(QThread):
     def increase_speed(self) -> None:
         """Увеличение скорости"""
         # Увеличение скорости соответствует уменьшению количества миллисекунд на тик
-        self.speed = int((1 - self.speed_factor) * self.speed)
+        self.speed = max(int((1 - self.speed_factor) * self.speed), 1)
 
     def decrease_speed(self) -> None:
         """Уменьшение скорости"""

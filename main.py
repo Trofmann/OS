@@ -87,7 +87,7 @@ class OS(QMainWindow):  # главное окно
     @pyqtSlot()
     def load_new_task(self):
         """Загрузка новой задачи"""
-        logic.load_new_task()
+        loaded = logic.load_new_task()
         print(f'Свободная память {system.get_empty_memory()} байт')
 
     @pyqtSlot()
