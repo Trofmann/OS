@@ -14,7 +14,7 @@ class System(QThread):
         super().__init__()
         self.is_running = False
 
-        self.cpu = CPU()
+        self.cpu = CPU()  # Инициализируем процессор
         self.memory = memory  # Для удобства в байтах
 
         self.speed = speed  # миллисекунд на такт
@@ -25,7 +25,7 @@ class System(QThread):
         while True:
             time.sleep(self.speed / 1000)  # Такт
             self.cpu.perform_tact()
-            self.tact_completed.emit()
+            self.tact_completed.emit() # Отправляем
 
     def increase_speed(self) -> None:
         """Увеличение скорости"""
