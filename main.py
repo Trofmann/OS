@@ -64,13 +64,18 @@ class OS(QMainWindow):  # главное окно
         self.speed_label.move(600, 50)
         self.speed_label.setFixedWidth(300)
 
-        self.used_memory_label = QLabel(f'Используемая память: ', self)
+        self.used_memory_label = QLabel('Используемая память: ', self)
         self.used_memory_label.move(600, 80)
         self.used_memory_label.setFixedWidth(300)
 
+        self.empty_memory_label = QLabel('Свободная память: ', self)
+        self.empty_memory_label.move(600, 110)
+        self.empty_memory_label.setFixedWidth(300)
+
         self.system_info_labels = [
             self.speed_label,
-            self.used_memory_label
+            self.used_memory_label,
+            self.empty_memory_label
         ]
 
         # Изначально система не запущена, а значит информацию видеть не должны
@@ -88,6 +93,10 @@ class OS(QMainWindow):  # главное окно
     def load_new_task(self):
         """Загрузка новой задачи"""
         loaded = logic.load_new_task()
+        if loaded:
+            print('Задача загружена')
+        else:
+            print('Недостаточно памяти')
         print(f'Свободная память {system.get_empty_memory()} байт')
 
     @pyqtSlot()
@@ -110,9 +119,13 @@ class OS(QMainWindow):  # главное окно
         self.speed_label.setVisible(True)
 
         used_memory = from_bytes_to_megabytes(system.get_used_memory())
+        empty_memory = from_bytes_to_megabytes(system.get_empty_memory())
 
         self.used_memory_label.setText(f'Используемая память: {used_memory} МБ')
         self.used_memory_label.setVisible(True)
+
+        self.empty_memory_label.setText(f'Свободная память: {empty_memory} МБ')
+        self.empty_memory_label.setVisible(True)
 
     @pyqtSlot()
     def stop_modeling(self):
