@@ -1,5 +1,7 @@
 from typing import List
-from process import Process, ProcessFabric
+from typing import Union
+
+from process import Process
 
 
 class Scheduler(object):
@@ -20,7 +22,7 @@ class Scheduler(object):
         # TODO: сделать в соответствии с вариантом
         pass
 
-    def get_performing_process(self):
+    def get_performing_process(self) -> Union[Process, None]:
         """Получить процесс для исполнения"""
         if self._processes:
             # Пока заглушка в виде первого процесса
