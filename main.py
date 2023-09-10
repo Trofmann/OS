@@ -2,6 +2,7 @@ import sys
 
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtWidgets import *
+from collections import deque
 
 import logic
 from system import system
@@ -61,15 +62,15 @@ class OS(QMainWindow):  # главное окно
         self.stop_modeling_button.clicked.connect(self.stop_modeling)
 
         self.speed_label = QLabel('Скорость: ', self)
-        self.speed_label.move(600, 50)
+        self.speed_label.move(300, 350)
         self.speed_label.setFixedWidth(300)
 
         self.used_memory_label = QLabel('Используемая память: ', self)
-        self.used_memory_label.move(600, 80)
+        self.used_memory_label.move(300, 370)
         self.used_memory_label.setFixedWidth(300)
 
         self.empty_memory_label = QLabel('Свободная память: ', self)
-        self.empty_memory_label.move(600, 110)
+        self.empty_memory_label.move(300, 390)
         self.empty_memory_label.setFixedWidth(300)
 
         self.system_info_labels = [
@@ -81,6 +82,36 @@ class OS(QMainWindow):  # главное окно
         # Изначально система не запущена, а значит информацию видеть не должны
         for label in self.system_info_labels:
             label.setVisible(False)
+
+        self.msg_label1 = QLabel('', self)
+        self.msg_label1.move(300, 410)
+        self.msg_label1.setFixedWidth(300)
+
+        self.msg_label2 = QLabel('', self)
+        self.msg_label2.move(300, 430)
+        self.msg_label2.setFixedWidth(300)
+
+        self.msg_label3 = QLabel('', self)
+        self.msg_label3.move(300, 450)
+        self.msg_label3.setFixedWidth(300)
+
+        self.msg_label4 = QLabel('', self)
+        self.msg_label4.move(300, 470)
+        self.msg_label4.setFixedWidth(300)
+
+        self.msg_label5 = QLabel('', self)
+        self.msg_label5.move(300, 490)
+        self.msg_label5.setFixedWidth(300)
+
+        self.messages = deque([], 5)
+
+        self.message_labels = [
+            self.msg_label1,
+            self.msg_label2,
+            self.msg_label3,
+            self.msg_label4,
+            self.msg_label5,
+        ]
 
     @pyqtSlot()
     def start_os(self):
@@ -94,9 +125,12 @@ class OS(QMainWindow):  # главное окно
         """Загрузка новой задачи"""
         loaded = logic.load_new_task()
         if loaded:
+            self.messages.append('Задача загружена')
             print('Задача загружена')
         else:
+            self.messages.append('Недостаточно памяти для загрузки задачи')
             print('Недостаточно памяти')
+        self.redraw_messages_labels()
         print(f'Свободная память {system.get_empty_memory()} байт')
 
     @pyqtSlot()
@@ -126,6 +160,14 @@ class OS(QMainWindow):  # главное окно
 
         self.empty_memory_label.setText(f'Свободная память: {empty_memory} МБ')
         self.empty_memory_label.setVisible(True)
+
+    def redraw_messages_labels(self):
+        for label in self.message_labels:
+            label.setVisible(False)
+
+        for ind, msg in enumerate(self.messages):
+            self.message_labels[ind].setText(msg)
+            self.message_labels[ind].setVisible(True)
 
     @pyqtSlot()
     def stop_modeling(self):

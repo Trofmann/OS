@@ -25,6 +25,7 @@ class System(QThread):
         while True:
             time.sleep(self.speed / 1000)  # Такт
             self.cpu.perform_tact()
+            # print(self.get_empty_memory()) # Для отладки
             self.tact_completed.emit()  # Отправляем
 
     def increase_speed(self) -> None:
@@ -49,5 +50,6 @@ class System(QThread):
 
 system = System(
     memory=from_megabytes_to_bytes(75),
+    # memory=75, # Для отладки невозможности загрузки задачи
     speed=100
 )
