@@ -62,15 +62,15 @@ class OS(QMainWindow):  # главное окно
         self.stop_modeling_button.clicked.connect(self.stop_modeling)
 
         self.speed_label = QLabel('Скорость: ', self)
-        self.speed_label.move(300, 350)
+        self.speed_label.move(300, 390)
         self.speed_label.setFixedWidth(300)
 
         self.used_memory_label = QLabel('Используемая память: ', self)
-        self.used_memory_label.move(300, 370)
+        self.used_memory_label.move(300, 410)
         self.used_memory_label.setFixedWidth(300)
 
         self.empty_memory_label = QLabel('Свободная память: ', self)
-        self.empty_memory_label.move(300, 390)
+        self.empty_memory_label.move(300, 430)
         self.empty_memory_label.setFixedWidth(300)
 
         self.system_info_labels = [
@@ -84,23 +84,23 @@ class OS(QMainWindow):  # главное окно
             label.setVisible(False)
 
         self.msg_label1 = QLabel('', self)
-        self.msg_label1.move(300, 410)
+        self.msg_label1.move(300, 450)
         self.msg_label1.setFixedWidth(300)
 
         self.msg_label2 = QLabel('', self)
-        self.msg_label2.move(300, 430)
+        self.msg_label2.move(300, 470)
         self.msg_label2.setFixedWidth(300)
 
         self.msg_label3 = QLabel('', self)
-        self.msg_label3.move(300, 450)
+        self.msg_label3.move(300, 490)
         self.msg_label3.setFixedWidth(300)
 
         self.msg_label4 = QLabel('', self)
-        self.msg_label4.move(300, 470)
+        self.msg_label4.move(300, 510)
         self.msg_label4.setFixedWidth(300)
 
         self.msg_label5 = QLabel('', self)
-        self.msg_label5.move(300, 490)
+        self.msg_label5.move(300, 530)
         self.msg_label5.setFixedWidth(300)
 
         self.messages = deque([], 5)
