@@ -8,19 +8,21 @@ class Task(object):
 
     def __init__(self, commands: List[Command]):
         self.commands = commands
+        self.current_command_index = 0
 
     def perform_tact(self):
         """Выполнение такта"""
-        self.commands[0].tacts_left -= 1
-        # Команда завершила своё исполнение, удалим её из задачи
-        if self.commands[0].tacts_left <= 0:  # Для стоп-команды
-            self.commands.pop(0)
+        self.commands[self.current_command_index].tacts_left -= 1
+        # Команда завершила своё исполнение, переместим указатель
+        print(self.current_command_index, len(self.commands))
+        if self.commands[self.current_command_index].tacts_left <= 0:  # Для стоп-команды
+            self.current_command_index += 1
 
     @property
     def is_finished(self):
         """Признак завершения задачи"""
-        # Задача завершена, если нет команд для выполнения
-        return not bool(self.commands)
+        # Задача завершена, если дошли до конца
+        return self.current_command_index == len(self.commands)
 
 
 class TaskFabric(object):
