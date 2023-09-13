@@ -82,5 +82,10 @@ class System(QThread):
 system = System(
     memory=from_megabytes_to_bytes(75),
     # memory=75, # Для отладки невозможности загрузки задачи
-    speed=100
+    speed=100,
+    kvant=0,
+    t_next=0,
+    t_init_io=0,
+    t_end_io=0,
+    t_load=0
 )
