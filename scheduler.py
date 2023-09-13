@@ -29,14 +29,22 @@ class Scheduler(object):
             return self._processes[0]
         return None
 
-    def remove_finished_processes(self):
+    def remove_finished_processes(self) -> bool:
         """Удаление завершённых процессов"""
+        completed = False  # Задача завершена
         old_count = len(self._processes)
         processes = [p for p in self._processes if not p.is_finished]
         self._processes = processes
         if old_count != len(self._processes):
             # Количество изменилось, а значит один из процессов завершился, надо отсортировать
             self._reorder_processes()
+            completed = True
+        return completed
+
+    @property
+    def processes_count(self) -> int:
+        """Число загруженных заданий"""
+        return len(self._processes)
 
 
 scheduler = Scheduler()

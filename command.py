@@ -24,15 +24,14 @@ class Command(object):
 
     def __init__(self, type_: int):
         self.type_ = type_
-        # Количество тактов до завершения
-        self.tacts_left = self.TYPE_DURATION_MAPPING[self.type_]
+        self.tacts_left = self.TYPE_DURATION_MAPPING[self.type_]  # Количество тактов до завершения
         self.size = self.TYPE_SIZE_MAPPING[self.type_]
 
 
 class CommandFabric(object):
     @staticmethod
     def generate_random() -> Command:
-        type_ = random.choice([Command.TYPE_COMPUTE, Command.TYPE_INPUT_OUTPUT]) # Стоп-команда будет последней
+        type_ = random.choice([Command.TYPE_COMPUTE, Command.TYPE_INPUT_OUTPUT])  # Стоп-команда будет последней
         return Command(type_=type_)
 
     @staticmethod

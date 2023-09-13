@@ -13,9 +13,16 @@ class CPU(object):
         processes = scheduler.get_processes()
         return sum([proc.get_used_memory() for proc in processes])
 
-    def perform_tact(self):
+    def perform_tact(self) -> bool:
         """Выполнение такта"""
+        completed = False  # Процесс завершён
         process = scheduler.get_performing_process()
         if process:
             process.perform_tact()
-            scheduler.remove_finished_processes()
+            completed = scheduler.remove_finished_processes()
+        return completed
+
+    @property
+    def processes_count(self) -> int:
+        """Число загруженных заданий"""
+        return scheduler.processes_count
