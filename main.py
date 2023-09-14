@@ -52,8 +52,14 @@ class OS(QMainWindow):  # главное окно
         self.decrease_speed_button.setToolTip('Уменьшить скорость ОС')
         self.decrease_speed_button.clicked.connect(self.decrease_speed)
 
+        self.remove_process_button = QPushButton('Удалить процесс', self)
+        self.remove_process_button.move(50, 220)
+        self.remove_process_button.setFixedWidth(200)
+        self.remove_process_button.setToolTip('Удалить процесс')
+        self.remove_process_button.clicked.connect(self.remove_process)
+
         self.stop_modeling_button = QPushButton('Завершить моделирование', self)
-        self.stop_modeling_button.move(50, 220)
+        self.stop_modeling_button.move(50, 250)
         self.stop_modeling_button.setFixedWidth(200)
         self.stop_modeling_button.setToolTip('Завершить моделирование')
         self.stop_modeling_button.clicked.connect(self.stop_modeling)
@@ -242,6 +248,20 @@ class OS(QMainWindow):  # главное окно
                 self.processes_table.setItem(row, col, QTableWidgetItem(value))
 
     @pyqtSlot()
+    def remove_process(self):
+        """Удаление процесс"""
+        process_uid, ok = QInputDialog.getText(
+            self, 'Удаление процесс', 'Введите uid процесса',
+        )
+        if ok:
+            error = scheduler.remove_process(process_uid)
+            if error:
+                self.messages.append('Не удалось удалить процесс')
+            else:
+                self.messages.append('Процесс удалён')
+            self.redraw_messages_labels()
+
+    @pyqtSlot()
     def stop_modeling(self):
         """Остановка моделирования"""
         logic.clean_system()
@@ -267,6 +287,7 @@ class OS(QMainWindow):  # главное окно
         self.increase_speed_button.setDisabled(value)
         self.decrease_speed_button.setDisabled(value)
         self.stop_modeling_button.setDisabled(value)
+        self.remove_process_button.setDisabled(value)
 
     def set_system_params_input_disabled(self, value: bool = True):
         """Блокируем или разблокируем поля ввода, активные только при выключенной системе"""

@@ -50,5 +50,14 @@ class Scheduler(object):
         """Число загруженных заданий"""
         return len(self._processes)
 
+    def remove_process(self, uid: str) -> bool:
+        """Удаление процесса по uid"""
+        error = True
+        found = list(filter(lambda p: p.uid == uid, self._processes))
+        if found:
+            self._processes.remove(found[0])
+            error = False
+        return error
+
 
 scheduler = Scheduler()
