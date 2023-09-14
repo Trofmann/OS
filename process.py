@@ -9,6 +9,12 @@ class Process(object):
     STATE_READY = 2
     STATE_BLOCKED = 3
 
+    STATE_VERBOSE = {
+        1: 'Активный',
+        2: 'Готов',
+        3: 'Заблокирован',
+    }
+
     def __init__(self, task: Task, state: int = STATE_READY):
         self.task = task
         self.state = state
@@ -33,6 +39,9 @@ class Process(object):
     @property
     def is_blocked(self) -> bool:
         return self.check_state(self.STATE_BLOCKED)
+
+    def get_state_display(self):
+        return self.STATE_VERBOSE[self.state]
 
     def perform_tact(self) -> None:
         """Выполнение такта"""

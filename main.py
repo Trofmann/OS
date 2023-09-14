@@ -1,11 +1,13 @@
 import sys
+from collections import deque
 
 from PyQt5.QtCore import pyqtSlot
 from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
-from collections import deque
 
 import logic
+from process import Process
+from scheduler import scheduler
 from system import system
 from utils import from_bytes_to_megabytes, from_megabytes_to_bytes
 
@@ -20,7 +22,7 @@ class OS(QMainWindow):  # главное окно
         self.setStyleSheet("background-color: #d3d3d3;")
         self.setWindowTitle("OS")  # заголовок окна
         self.move(300, 300)  # положение окна
-        self.resize(1000, 600)  # размер окна
+        self.resize(1700, 900)  # размер окна
 
         self.manage_commands_label = QLabel('Команды управления', self)
         self.manage_commands_label.move(50, 50)
@@ -138,6 +140,17 @@ class OS(QMainWindow):  # главное окно
         self.kvant_input.move(150, 400)
         self.kvant_input.setText('20')
 
+        self.processes_table = QTableWidget(self)
+        self.processes_table.setColumnCount(5)
+        self.processes_table.setRowCount(0)
+        self.processes_table.move(300, 100)
+        self.processes_table.setFixedWidth(1250)
+        self.processes_table.setFixedHeight(200)
+        self.processes_table.setHorizontalHeaderLabels(['', 'uid', 'Статус', 'Объём памяти', 'Счётчик команд'])
+
+        for i in range(5):
+            self.processes_table.setColumnWidth(i, 250)
+
         self.system_was_started = False
 
     @pyqtSlot()
@@ -153,7 +166,7 @@ class OS(QMainWindow):  # главное окно
             system.kvant = kvant
 
         if not self.system_was_started:
-            system.tact_completed.connect(self.redraw_info_label)
+            system.tact_completed.connect(self.redraw_after_tact)
             system.start()
             self.system_was_started = True
 
@@ -188,6 +201,10 @@ class OS(QMainWindow):  # главное окно
         print(f'{system.speed} миллисекунд на тик')
 
     @pyqtSlot()
+    def redraw_after_tact(self):
+        self.redraw_info_label()
+        self.redraw_processes_table()
+
     def redraw_info_label(self):
         self.speed_label.setText(f'Скорость: {system.speed} миллисекунд на тик')
         self.speed_label.setVisible(True)
@@ -208,6 +225,21 @@ class OS(QMainWindow):  # главное окно
         for ind, msg in enumerate(self.messages):
             self.message_labels[ind].setText(msg)
             self.message_labels[ind].setVisible(True)
+
+    def redraw_processes_table(self):
+        """Перерисовка таблицы процессов"""
+        processes = scheduler.get_processes()
+        self.processes_table.setRowCount(len(processes))
+        for row, process in enumerate(processes):  # type: int, Process
+            row_data = [
+                '',
+                process.uid,
+                process.get_state_display(),
+                str(process.get_used_memory()),
+                str(process.task.current_command_index)
+            ]
+            for col, value in enumerate(row_data):
+                self.processes_table.setItem(row, col, QTableWidgetItem(value))
 
     @pyqtSlot()
     def stop_modeling(self):
