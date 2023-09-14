@@ -59,5 +59,9 @@ class Scheduler(object):
             error = False
         return error
 
+    def get_blocked_processes(self) -> List[Process]:
+        """Процессы в статусе 'Заблокирован'"""
+        return list(filter(lambda p: p.is_blocked, self._processes))
+
 
 scheduler = Scheduler()

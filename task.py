@@ -16,8 +16,8 @@ class Task(object):
     def perform_tact(self) -> None:
         """Выполнение такта"""
         self.commands[self.current_command_index].tacts_left -= 1
-        # Команда завершила своё исполнение, переместим указатель
         print(self.current_command_index, len(self.commands))
+        # Команда завершила своё исполнение, переместим указатель
         if self.commands[self.current_command_index].tacts_left <= 0:  # Для стоп-команды
             self.current_command_index += 1
 
