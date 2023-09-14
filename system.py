@@ -38,11 +38,12 @@ class System(QThread):
     def run(self) -> None:
         """Запуск системы"""
         while True:
-            time.sleep(self.speed / 1000)  # Такт
-            completed = self.cpu.perform_tact()
-            self._completed_tasks_count += completed
-            # print(self.get_empty_memory()) # Для отладки
-            self.tact_completed.emit()  # Отправляем
+            if self.is_running:
+                time.sleep(self.speed / 1000)  # Такт
+                completed = self.cpu.perform_tact()
+                self._completed_tasks_count += completed
+                # print(self.get_empty_memory()) # Для отладки
+                self.tact_completed.emit()  # Отправляем
 
     def increase_speed(self) -> None:
         """Увеличение скорости"""
@@ -80,10 +81,10 @@ class System(QThread):
 
 
 system = System(
-    memory=from_megabytes_to_bytes(75),
-    # memory=75, # Для отладки невозможности загрузки задачи
+    memory=from_megabytes_to_bytes(1),
+    # memory=10000, # Для отладки невозможности загрузки задачи
     speed=100,
-    kvant=0,
+    kvant=20,
     t_next=0,
     t_init_io=0,
     t_end_io=0,

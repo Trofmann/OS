@@ -11,3 +11,9 @@ def load_new_task() -> bool:
         scheduler.append_process(process_)
         return True
     return False
+
+
+def clean_system() -> None:
+    system.is_running = False
+    system.cpu.performing_processes_index = 0  # Сброс счётчика
+    scheduler.clean_processes()

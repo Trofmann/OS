@@ -17,6 +17,10 @@ class Scheduler(object):
     def get_processes(self) -> List[Process]:
         return self._processes
 
+    def clean_processes(self) -> None:
+        """Очистка списка процессов"""
+        self._processes = []
+
     def _reorder_processes(self):
         """Пересортировка процессов"""
         # TODO: сделать в соответствии с вариантом
