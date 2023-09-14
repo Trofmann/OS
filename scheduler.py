@@ -9,6 +9,7 @@ class Scheduler(object):
 
     def __init__(self):
         self._processes = []  # type: List[Process]
+        self.completed_tasks_count = 0  # Число выполненных задач
 
     def append_process(self, process: Process) -> None:
         """Добавление процесса"""

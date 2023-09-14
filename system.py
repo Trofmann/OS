@@ -33,15 +33,13 @@ class System(QThread):
         self.t_load = t_load  # Число тактов на загрузку задания
 
         self._start_time = time.time()  # Время начала работы
-        self._completed_tasks_count = 0  # Число выполненных задач
 
     def run(self) -> None:
         """Запуск системы"""
         while True:
             if self.is_running:
                 time.sleep(self.speed / 1000)  # Такт
-                completed = self.cpu.perform_tact()
-                self._completed_tasks_count += completed
+                self.cpu.perform_tact()
                 # print(self.get_empty_memory()) # Для отладки
                 self.tact_completed.emit()  # Отправляем
 
@@ -73,11 +71,6 @@ class System(QThread):
     def working_time(self) -> float:
         """Время работы"""
         return time.time() - self._start_time
-
-    @property
-    def completed_tasks_count(self) -> int:
-        """Число выполненных задач"""
-        return self._completed_tasks_count
 
 
 system = System(
