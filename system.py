@@ -123,6 +123,8 @@ class System(QThread):
         params_dict = asdict(params)
         for attr, value in params_dict.items():
             if hasattr(self, attr):
+                if attr == 'memory':
+                    value = from_megabytes_to_bytes(value)
                 setattr(self, attr, value)
             else:
                 raise Exception('У системы отсутствует такой параметр')
