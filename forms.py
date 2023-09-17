@@ -10,9 +10,11 @@ class Field:
         self.min_value = min_value
         self.default = default
 
-    def clean(self, value):
+    def clean(self, input_widget):
+        value = input_widget.text()
         cleaned_value = self.to_type(value) if value else self.default
         cleaned_value = max(cleaned_value, self.min_value)
+        input_widget.setText(str(cleaned_value))
         return cleaned_value
 
 
@@ -30,10 +32,8 @@ class Form:
         cleaned_data = dict()
         for field_name, field in self.fields.items():
             input_ = getattr(self.parent_widget, field.input_field_name)
-            value = input_.text()
-            value = field.clean(value)
+            value = field.clean(input_)
             cleaned_data[field_name] = value
-            input_.setText(str(value))
         return self.model(**cleaned_data)
 
 
