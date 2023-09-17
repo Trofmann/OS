@@ -7,19 +7,23 @@ from uuid import uuid4
 class Task(object):
     """Задача"""
 
-    def __init__(self, commands: List[Command], priority: int):
+    def __init__(self, commands: List[Command], priority: int, process_=None):
         self.commands = commands
         self.current_command_index = 0
         self.priority = priority  # Приоритет задания
         self.uid = str(uuid4())  # Генерируем в момент создания задачи
+        self.process = process_  # Процесс, которому принадлежит задача
 
-    def perform_tact(self) -> None:
+    def perform_tact(self) -> bool:
         """Выполнение такта"""
+        command_finished = False  # Команда завершила выполнение
         self.commands[self.current_command_index].tacts_left -= 1
-        print(self.current_command_index, len(self.commands))
+        print(self.current_command_index, len(self.commands), self.current_command.type_)
         # Команда завершила своё исполнение, переместим указатель
         if self.commands[self.current_command_index].tacts_left <= 0:  # Для стоп-команды
             self.current_command_index += 1
+            command_finished = True
+        return command_finished
 
     @property
     def is_finished(self) -> bool:
