@@ -9,6 +9,7 @@ def load_new_task() -> bool:
     process_ = ProcessFabric.generate_random()
     if system.get_empty_memory() >= process_.get_used_memory():
         scheduler.append_process(process_)
+        system.new_tasks_count += 1
         return True
     return False
 

@@ -33,12 +33,17 @@ class System(QThread):
 
         self.t_load = t_load  # Число тактов на загрузку задания
 
+        self.new_tasks_count = 0  # Служебное поле, хранящее количество новых загруженных задач
+
         self._start_time = time.time()  # Время начала работы
 
     def run(self) -> None:
         """Запуск системы"""
         while True:
             if self.is_running:
+                self.sleep_for_tacts(self.new_tasks_count * self.t_load)
+                self.new_tasks_count = 0
+
                 # region Поиск подходящего процесс
                 while True:
                     # TODO: на выбор процесса тратится определённое количество тактов
@@ -58,6 +63,7 @@ class System(QThread):
                 # На выбор процесса потратили такты
                 self.sleep_for_tacts(self.t_next)
                 # endregion
+
                 self.cpu.perform_frame(process)
                 if process in scheduler.get_processes() and process.is_active:
                     process.set_ready()
@@ -114,5 +120,5 @@ system = System(
     t_next=4,
     t_init_io=0,
     t_end_io=0,
-    t_load=0
+    t_load=1
 )
