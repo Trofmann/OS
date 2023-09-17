@@ -172,6 +172,8 @@ class OS(QMainWindow):  # главное окно
             system.kvant = kvant
 
         if not self.system_was_started:
+            self.redraw_speed_label()
+            self.redraw_after_tact()
             system.tact_completed.connect(self.redraw_after_tact)
             system.start()
             self.system_was_started = True
@@ -199,22 +201,26 @@ class OS(QMainWindow):  # главное окно
     @pyqtSlot()
     def increase_speed(self):
         system.increase_speed()
+        self.redraw_speed_label()
         print(f'{system.speed} миллисекунд на тик')
 
     @pyqtSlot()
     def decrease_speed(self):
         system.decrease_speed()
+        self.redraw_speed_label()
         print(f'{system.speed} миллисекунд на тик')
 
     @pyqtSlot()
     def redraw_after_tact(self):
+        """Перерисовка объектов, которые меняются каждый такт"""
         self.redraw_info_label()
         self.redraw_processes_table()
 
-    def redraw_info_label(self):
+    def redraw_speed_label(self):
         self.speed_label.setText(f'Скорость: {system.speed} миллисекунд на тик')
         self.speed_label.setVisible(True)
 
+    def redraw_info_label(self):
         used_memory = from_bytes_to_megabytes(system.get_used_memory())
         empty_memory = from_bytes_to_megabytes(system.get_empty_memory())
 
@@ -259,6 +265,7 @@ class OS(QMainWindow):  # главное окно
             else:
                 self.messages.append('Процесс удалён')
             self.redraw_messages_labels()
+        self.redraw_processes_table()
 
     @pyqtSlot()
     def stop_modeling(self):
