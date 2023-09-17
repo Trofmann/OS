@@ -4,6 +4,7 @@ from PyQt5.QtCore import QThread, pyqtSignal
 
 from cpu import CPU
 from utils import from_megabytes_to_bytes
+from scheduler import scheduler
 
 
 class System(QThread):
@@ -38,12 +39,24 @@ class System(QThread):
         """Запуск системы"""
         while True:
             if self.is_running:
-                # process = scheduler.get_performing_process()
-                # process  = scheduler.get_performing_process() # type: Union[None, Process]
-                # time.sleep(self.speed / 1000)  # Такт
-                # self.cpu.perform_tact()
-                # # print(self.get_empty_memory()) # Для отладки
-                self.cpu.perform_frame()
+                # region Поиск подходящего процесс
+                while True:
+                    # TODO: на выбор процесса тратится определённое количество тактов
+                    # Выбираем первый в очереди процесс, у которого следующая команда не является командой ввода-вывода
+                    process = scheduler.get_performing_process()  # Получаем процесс
+                    if not process:
+                        break
+                    if process.current_command_is_io:
+                        # Заблокируем
+                        process.set_blocked()
+                        self.send_process_changed_data()  # Если процесс сразу же заблокируется, отрисуем его
+                    else:
+                        process.set_active()
+                        self.send_process_changed_data()
+                        break
+                # endregion
+
+                self.cpu.perform_frame(process)
                 # self.process_data_changed.emit()  # Отправляем
 
     def send_process_changed_data(self) -> None:

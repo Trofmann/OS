@@ -16,31 +16,8 @@ class CPU(object):
         processes = scheduler.get_processes()
         return sum([proc.get_used_memory() for proc in processes])
 
-    # def perform_tact(self, process: Process) -> bool:
-    #     """Выполнение такта"""
-    # completed = False  # Процесс завершён
-    # process = scheduler.get_performing_process()
-    # if process:
-    #     process.perform_tact()
-    #     completed = scheduler.remove_finished_processes()
-    # return completed
-
-    def perform_frame(self):
+    def perform_frame(self, process: Process):
         """Выполнение фрейма"""
-        while True:
-            # TODO: на выбор процесса тратится определённое количество тактов
-            # Выбираем первый в очереди процесс, у которого следующая команда не является командой ввода-вывода
-            process = scheduler.get_performing_process()  # Получаем процесс
-            if not process:
-                break
-            if process.current_command_is_io:
-                # Заблокируем
-                process.set_blocked()
-                self.system.send_process_changed_data()  # Если процесс сразу же заблокируется, отрисуем его
-            else:
-                process.set_active()
-                self.system.send_process_changed_data()
-                break
         if process:
             prematurely_finished = False  # Флаг для отправки сигнала, если фрейм завершился преждевременно
             for cur_tact in range(self.system.kvant):
