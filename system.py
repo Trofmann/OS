@@ -55,17 +55,22 @@ class System(QThread):
                         process.set_active()
                         self.send_process_changed_data()
                         break
+                # На выбор процесса потратили такты
+                self.sleep_for_tacts(self.t_next)
                 # endregion
                 self.cpu.perform_frame(process)
                 if process in scheduler.get_processes() and process.is_active:
                     process.set_ready()
                     self.send_process_changed_data()
 
-                time.sleep(self.speed / 1000)
+                self.sleep_for_tacts()
                 blocked_processes = scheduler.get_blocked_processes()
                 for blocked_process in blocked_processes:
                     blocked_process.perform_tact()
                 self.send_process_changed_data()
+
+    def sleep_for_tacts(self, count_: int = 1) -> None:
+        time.sleep((self.speed * count_) / 1000)
 
     def send_process_changed_data(self) -> None:
         """Отправка сигнала"""
@@ -106,7 +111,7 @@ system = System(
     # memory=10000, # Для отладки невозможности загрузки задачи
     speed=100,
     kvant=20,
-    t_next=0,
+    t_next=4,
     t_init_io=0,
     t_end_io=0,
     t_load=0

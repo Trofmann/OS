@@ -17,4 +17,4 @@ def clean_system() -> None:
     system.is_running = False
     system.cpu.performing_processes_index = 0  # Сброс счётчика
     scheduler.clean_processes()
-    scheduler.completed_tasks_count = 0 # Сбрасываем счётчик
+    scheduler.completed_tasks_count = 0  # Сбрасываем счётчик

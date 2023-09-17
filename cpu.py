@@ -39,7 +39,7 @@ class CPU(object):
                     # Процесс или завершился, или заблокировался в предыдущем такте
                     prematurely_finished = True
                     break  # Считаем фрейм выполненным преждевременно
-                time.sleep(self.system.speed / 1000)  # Такт
+                self.system.sleep_for_tacts()
                 command = process.current_command
                 if command.not_started:
                     # Команда не выполнялась, проверим её полностью
