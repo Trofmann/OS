@@ -24,6 +24,7 @@ class OS(QMainWindow):  # главное окно
         self.move(300, 300)  # положение окна
         self.resize(1700, 900)  # размер окна
 
+        # region Кнопки
         self.manage_commands_label = QLabel('Команды управления', self)
         self.manage_commands_label.move(50, 50)
         self.manage_commands_label.setFixedWidth(200)
@@ -72,7 +73,9 @@ class OS(QMainWindow):  # главное окно
         self.exit_button.setToolTip('Выйти')
         self.exit_button.clicked.connect(self.exit)
         self.exit_button.setStyleSheet('background-color: #ff0000;')
+        # endregion
 
+        # region Информация
         self.speed_label = QLabel('Скорость: ', self)
         self.speed_label.move(300, 390)
         self.speed_label.setFixedWidth(300)
@@ -94,7 +97,9 @@ class OS(QMainWindow):  # главное окно
         # Изначально система не запущена, а значит информацию видеть не должны
         for label in self.system_info_labels:
             label.setVisible(False)
+        # endregion
 
+        # region Сообщения
         self.msg_label1 = QLabel('', self)
         self.msg_label1.move(300, 450)
         self.msg_label1.setFixedWidth(300)
@@ -124,10 +129,9 @@ class OS(QMainWindow):  # главное окно
             self.msg_label4,
             self.msg_label5,
         ]
+        # endregion
 
-        # Память
-        # Квант
-        # Размер команд в тактах
+        # region Ввод параметров системы
         self.memory_input_label = QLabel('Память системы', self)
         self.memory_input_label.move(50, 350)
         self.memory_input_label.setFixedWidth(100)
@@ -159,6 +163,9 @@ class OS(QMainWindow):  # главное окно
             self.memory_input, self.kvant_input, self.t_next_input
         ]
 
+        # endregion
+
+        # region Таблица процессов
         self.processes_table = QTableWidget(self)
         self.processes_table.setColumnCount(5)
         self.processes_table.setRowCount(0)
@@ -170,8 +177,11 @@ class OS(QMainWindow):  # главное окно
         for i in range(5):
             self.processes_table.setColumnWidth(i, 250)
 
+        # endregion
+
         self.system_was_started = False
 
+    # region Обработка нажатий кнопок
     @pyqtSlot()
     def start_os(self):
         if not system.is_running:
@@ -234,6 +244,44 @@ class OS(QMainWindow):  # главное окно
         self.redraw_info_label()
         self.redraw_processes_table()
 
+    @pyqtSlot()
+    def remove_process(self):
+        """Удаление процесса"""
+        process_uid, ok = QInputDialog.getText(
+            self, 'Удаление процесс', 'Введите uid процесса',
+        )
+        if ok:
+            error = scheduler.remove_process(process_uid)
+            if error:
+                self.messages.append('Не удалось удалить процесс')
+            else:
+                self.messages.append('Процесс удалён')
+            self.redraw_messages_labels()
+        self.redraw_processes_table()
+
+    @pyqtSlot()
+    def stop_modeling(self):
+        """Остановка моделирования"""
+        logic.clean_system()
+        for label in self.system_info_labels:
+            label.setVisible(False)
+
+        for label in self.message_labels:
+            label.setVisible(False)
+
+        self.messages = deque([], 5)
+        self.set_system_button_disabled(True)
+        self.init_os_button.setDisabled(False)
+        self.set_system_params_input_disabled(False)
+        print('Система остановлена')
+
+    @pyqtSlot()
+    def exit(self):
+        sys.exit()
+
+    # endregion
+
+    # region Отрисовка
     def redraw_speed_label(self):
         self.speed_label.setText(f'Скорость: {system.speed} миллисекунд на тик')
         self.speed_label.setVisible(True)
@@ -270,42 +318,9 @@ class OS(QMainWindow):  # главное окно
             ]
             for col, value in enumerate(row_data):
                 self.processes_table.setItem(row, col, QTableWidgetItem(value))
+    # endregion
 
-    @pyqtSlot()
-    def remove_process(self):
-        """Удаление процесса"""
-        process_uid, ok = QInputDialog.getText(
-            self, 'Удаление процесс', 'Введите uid процесса',
-        )
-        if ok:
-            error = scheduler.remove_process(process_uid)
-            if error:
-                self.messages.append('Не удалось удалить процесс')
-            else:
-                self.messages.append('Процесс удалён')
-            self.redraw_messages_labels()
-        self.redraw_processes_table()
-
-    @pyqtSlot()
-    def stop_modeling(self):
-        """Остановка моделирования"""
-        logic.clean_system()
-        for label in self.system_info_labels:
-            label.setVisible(False)
-
-        for label in self.message_labels:
-            label.setVisible(False)
-
-        self.messages = deque([], 5)
-        self.set_system_button_disabled(True)
-        self.init_os_button.setDisabled(False)
-        self.set_system_params_input_disabled(False)
-        print('Система остановлена')
-
-    @pyqtSlot()
-    def exit(self):
-        sys.exit()
-
+    # region Установка доступности
     def set_system_button_disabled(self, value: bool = True):
         """Блокируем или разблокируем кнопки, активные только при запущенной системе"""
         self.load_new_task_button.setDisabled(value)
@@ -318,6 +333,7 @@ class OS(QMainWindow):  # главное окно
         """Блокируем или разблокируем поля ввода, активные только при выключенной системе"""
         for input_ in self.system_params_inputs:
             input_.setDisabled(value)
+    # endregion
 
 
 if __name__ == "__main__":
