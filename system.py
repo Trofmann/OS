@@ -8,7 +8,7 @@ from utils import from_megabytes_to_bytes
 
 class System(QThread):
     """Система"""
-    tact_completed = pyqtSignal()
+    process_data_changed = pyqtSignal()
 
     def __init__(self, memory: int, speed: float, kvant: int, t_next: int, t_init_io: int, t_end_io: int, t_load: int):
         super().__init__()
@@ -44,7 +44,11 @@ class System(QThread):
                 # self.cpu.perform_tact()
                 # # print(self.get_empty_memory()) # Для отладки
                 self.cpu.perform_frame()
-                # self.tact_completed.emit()  # Отправляем
+                # self.process_data_changed.emit()  # Отправляем
+
+    def send_process_changed_data(self) -> None:
+        """Отправка сигнала"""
+        self.process_data_changed.emit()
 
     def increase_speed(self) -> None:
         """Увеличение скорости"""

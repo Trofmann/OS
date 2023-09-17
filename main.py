@@ -174,7 +174,7 @@ class OS(QMainWindow):  # главное окно
         if not self.system_was_started:
             self.redraw_speed_label()
             self.redraw_after_tact()
-            system.tact_completed.connect(self.redraw_after_tact)
+            system.process_data_changed.connect(self.redraw_after_tact)
             system.start()
             self.system_was_started = True
 
@@ -196,6 +196,7 @@ class OS(QMainWindow):  # главное окно
             self.messages.append('Недостаточно памяти для загрузки задачи')
             print('Недостаточно памяти')
         self.redraw_messages_labels()
+        self.redraw_processes_table()
         print(f'Свободная память {system.get_empty_memory()} байт')
 
     @pyqtSlot()
@@ -254,7 +255,7 @@ class OS(QMainWindow):  # главное окно
 
     @pyqtSlot()
     def remove_process(self):
-        """Удаление процесс"""
+        """Удаление процесса"""
         process_uid, ok = QInputDialog.getText(
             self, 'Удаление процесс', 'Введите uid процесса',
         )

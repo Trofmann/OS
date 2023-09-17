@@ -36,6 +36,7 @@ class CPU(object):
             if process.current_command_is_io:
                 # Заблокируем
                 process.set_blocked()
+                self.system.send_process_changed_data()  # Если процесс сразу же заблокируется, отрисуем его
             else:
                 process.set_active()
                 break
@@ -64,13 +65,13 @@ class CPU(object):
                         # Выполним её
                         process.perform_tact()
                 else:
-                    # Команда выполнялась, просто продолжим выполнение задачи
+                    # Команда уже выполнялась, просто продолжим выполнение задачи
                     process.perform_tact()
-                self.system.tact_completed.emit()
+                self.system.send_process_changed_data()
             if process in scheduler.get_processes() and process.is_active:
                 process.set_ready()
             if prematurely_finished:
-                self.system.tact_completed.emit()
+                self.system.send_process_changed_data()
 
     @property
     def processes_count(self) -> int:
