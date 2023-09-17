@@ -6,6 +6,7 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 
 import logic
+from params import SystemParams
 from process import Process
 from scheduler import scheduler
 from system import system
@@ -194,30 +195,8 @@ class OS(QMainWindow):  # главное окно
     @pyqtSlot()
     def start_os(self):
         if not system.is_running:
-            memory = self.memory_input.text()
-            memory = int(memory) if memory else 1
-            memory = max(memory, 1)
-            self.memory_input.setText(str(memory))
-
-            kvant = self.kvant_input.text()
-            kvant = int(kvant) if kvant else 20
-            kvant = max(kvant, 1)
-            self.kvant_input.setText(str(kvant))
-
-            t_next = self.t_next_input.text()
-            t_next = int(t_next) if t_next else 4
-            t_next = max(t_next, 1)
-            self.t_next_input.setText(str(t_next))
-
-            t_load = self.t_load_input.text()
-            t_load = int(t_load) if t_load else 1
-            t_load = max(t_load, 1)
-            self.t_load_input.setText(str(t_load))
-
-            system.memory = from_megabytes_to_bytes(memory)
-            system.kvant = kvant
-            system.t_next = t_next
-            system.t_load = t_load
+            params = self.extract_system_params()
+            system.update_params(params)
 
         if not self.system_was_started:
             self.redraw_speed_label()
@@ -355,7 +334,37 @@ class OS(QMainWindow):  # главное окно
         """Блокируем или разблокируем поля ввода, активные только при выключенной системе"""
         for input_ in self.system_params_inputs:
             input_.setDisabled(value)
+
     # endregion
+
+    def extract_system_params(self) -> SystemParams:
+        """Извлечение параметров системы из полей ввода"""
+        memory = self.memory_input.text()
+        memory = int(memory) if memory else 1
+        memory = max(memory, 1)
+        self.memory_input.setText(str(memory))
+
+        kvant = self.kvant_input.text()
+        kvant = int(kvant) if kvant else 20
+        kvant = max(kvant, 1)
+        self.kvant_input.setText(str(kvant))
+
+        t_next = self.t_next_input.text()
+        t_next = int(t_next) if t_next else 4
+        t_next = max(t_next, 1)
+        self.t_next_input.setText(str(t_next))
+
+        t_load = self.t_load_input.text()
+        t_load = int(t_load) if t_load else 1
+        t_load = max(t_load, 1)
+        self.t_load_input.setText(str(t_load))
+
+        return SystemParams(
+            memory=from_megabytes_to_bytes(memory),
+            kvant=kvant,
+            t_next=t_next,
+            t_load=t_load
+        )
 
 
 if __name__ == "__main__":

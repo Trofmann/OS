@@ -1,8 +1,10 @@
 import time
+from dataclasses import asdict
 
 from PyQt5.QtCore import QThread, pyqtSignal
 
 from cpu import CPU
+from params import SystemParams
 from utils import from_megabytes_to_bytes
 from scheduler import scheduler
 
@@ -110,6 +112,16 @@ class System(QThread):
     def working_time(self) -> float:
         """Время работы"""
         return time.time() - self._start_time
+
+    def update_params(self, params: SystemParams) -> None:
+        """Обновление параметров"""
+        params_dict = asdict(params)
+        for attr, value in params_dict.items():
+            if hasattr(self, attr):
+                setattr(self, attr, value)
+            else:
+                raise Exception('У системы отсутствует такой параметр')
+
 
 
 system = System(
