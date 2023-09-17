@@ -27,6 +27,15 @@ class Command(object):
         self.tacts_left = self.TYPE_DURATION_MAPPING[self.type_]  # Количество тактов до завершения
         self.size = self.TYPE_SIZE_MAPPING[self.type_]
 
+    @property
+    def is_io(self) -> bool:
+        return self.type_ == self.TYPE_INPUT_OUTPUT
+
+    @property
+    def not_started(self) -> bool:
+        """Команда ещё выполнялась"""
+        return self.tacts_left == self.TYPE_DURATION_MAPPING[self.type_]
+
 
 class CommandFabric(object):
     @staticmethod

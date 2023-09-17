@@ -27,6 +27,15 @@ class Task(object):
         # Задача завершена, если дошли до конца
         return self.current_command_index == len(self.commands)
 
+    @property
+    def current_command_is_io(self) -> bool:
+        """Следующая задача является командой ввода вывода"""
+        return self.commands[self.current_command_index].is_io
+
+    @property
+    def current_command(self) -> Command:
+        return self.commands[self.current_command_index]
+
 
 class TaskFabric(object):
     @staticmethod

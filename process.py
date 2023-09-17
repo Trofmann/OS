@@ -40,12 +40,24 @@ class Process(object):
     def is_blocked(self) -> bool:
         return self.check_state(self.STATE_BLOCKED)
 
+    def set_active(self) -> None:
+        self.state = self.STATE_ACTIVE
+
+    def set_ready(self) -> None:
+        self.state = self.STATE_READY
+
+    def set_blocked(self) -> None:
+        self.state = self.STATE_BLOCKED
+
     def get_state_display(self):
         return self.STATE_VERBOSE[self.state]
 
     def perform_tact(self) -> None:
         """Выполнение такта"""
         self.task.perform_tact()
+
+    def get_commands(self):
+        return self.task.commands
 
     @property
     def is_finished(self) -> bool:
@@ -64,8 +76,17 @@ class Process(object):
 
     @property
     def ready_time(self) -> int:
-        """Время нахождения в списке готовности (Простой процесс) в процентах от времени выполнения задания"""
+        """Время нахождения в списке готовности (Простой процесса) в процентах от времени выполнения задания"""
         return 0
+
+    @property
+    def current_command_is_io(self) -> bool:
+        """Следующая команда является командой ввода вывода"""
+        return self.task.current_command_is_io
+
+    @property
+    def current_command(self):
+        return self.task.current_command
 
 
 class ProcessFabric(object):

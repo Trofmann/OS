@@ -14,7 +14,7 @@ class System(QThread):
         super().__init__()
         self.is_running = False
 
-        self.cpu = CPU()  # Инициализируем процессор
+        self.cpu = CPU(system_=self)  # Инициализируем процессор
         self.memory = memory  # Для удобства в байтах
 
         self.speed = speed  # миллисекунд на такт
@@ -38,9 +38,12 @@ class System(QThread):
         """Запуск системы"""
         while True:
             if self.is_running:
-                time.sleep(self.speed / 1000)  # Такт
-                self.cpu.perform_tact()
-                # print(self.get_empty_memory()) # Для отладки
+                # process = scheduler.get_performing_process()
+                # process  = scheduler.get_performing_process() # type: Union[None, Process]
+                # time.sleep(self.speed / 1000)  # Такт
+                # self.cpu.perform_tact()
+                # # print(self.get_empty_memory()) # Для отладки
+                self.cpu.perform_frame()
                 self.tact_completed.emit()  # Отправляем
 
     def increase_speed(self) -> None:
