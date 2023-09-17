@@ -127,7 +127,7 @@ class System(QThread):
                     value = from_megabytes_to_bytes(value)
                 setattr(self, attr, value)
             else:
-                raise Exception('У системы отсутствует такой параметр')
+                raise Exception(f'У системы отсутствует параметр {attr}')
 
 
 system = System(

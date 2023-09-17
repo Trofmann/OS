@@ -1,6 +1,6 @@
 from typing import Any
 
-from params import SystemParams
+from params import SystemParams, CommandParams
 
 
 class Field:
@@ -55,3 +55,16 @@ class SystemParamsForm(Form):
         default=1
     )
     model = SystemParams
+
+
+class CommandParamsForm(Form):
+    compute_duration = Field(
+        input_field_name='compute_command_input',
+        default=1
+    )
+    io_duration = Field(
+        input_field_name='io_command_input',
+        default=10,
+        min_value=5
+    )
+    model = CommandParams

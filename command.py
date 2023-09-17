@@ -1,5 +1,8 @@
 import random
+from dataclasses import asdict
 from typing import List
+
+from params import CommandParams
 
 
 class Command(object):
@@ -8,12 +11,8 @@ class Command(object):
     TYPE_INPUT_OUTPUT = 2
     TYPE_STOP = 3
 
-    # Продолжительность в тактах
-    TYPE_DURATION_MAPPING = {
-        TYPE_COMPUTE: 4,
-        TYPE_INPUT_OUTPUT: 40,
-        TYPE_STOP: 0,
-    }
+    compute_duration = 4
+    io_duration = 40
 
     # Размер в байтах
     TYPE_SIZE_MAPPING = {
@@ -24,8 +23,16 @@ class Command(object):
 
     def __init__(self, type_: int):
         self.type_ = type_
-        self.tacts_left = self.TYPE_DURATION_MAPPING[self.type_]  # Количество тактов до завершения
+        self.tacts_left = self.type_duration_mapping[self.type_]  # Количество тактов до завершения
         self.size = self.TYPE_SIZE_MAPPING[self.type_]
+
+    @property
+    def type_duration_mapping(self):
+        return {
+            self.TYPE_COMPUTE: self.__class__.compute_duration,
+            self.TYPE_INPUT_OUTPUT: self.__class__.io_duration,
+            self.TYPE_STOP: 0,
+        }
 
     @property
     def is_io(self) -> bool:
@@ -34,7 +41,17 @@ class Command(object):
     @property
     def not_started(self) -> bool:
         """Команда ещё выполнялась"""
-        return self.tacts_left == self.TYPE_DURATION_MAPPING[self.type_]
+        return self.tacts_left == self.type_duration_mapping[self.type_]
+
+    @classmethod
+    def update_params(cls, params: CommandParams):
+        """Обновление параметров"""
+        params_dict = asdict(params)
+        for attr, value in params_dict.items():
+            if hasattr(cls, attr):
+                setattr(cls, attr, value)
+            else:
+                raise Exception(f'У команды отсутствует параметр {attr}')
 
 
 class CommandFabric(object):

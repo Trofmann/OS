@@ -6,12 +6,13 @@ from PyQt5.QtGui import QIntValidator
 from PyQt5.QtWidgets import *
 
 import logic
-from forms import SystemParamsForm
-from params import SystemParams
+from command import Command
+from forms import SystemParamsForm, CommandParamsForm
+from params import SystemParams, CommandParams
 from process import Process
 from scheduler import scheduler
 from system import system
-from utils import from_bytes_to_megabytes, from_megabytes_to_bytes
+from utils import from_bytes_to_megabytes
 
 
 class OS(QMainWindow):  # главное окно
@@ -181,7 +182,7 @@ class OS(QMainWindow):  # главное окно
         # endregion
 
         # region Ввод параметров команд
-        self.commands_params_label = QLabel('Параметры команд', self)
+        self.commands_params_label = QLabel('Продолжительность команд', self)
         self.commands_params_label.move(50, 580)
         self.commands_params_label.setFixedWidth(200)
 
@@ -230,8 +231,11 @@ class OS(QMainWindow):  # главное окно
     @pyqtSlot()
     def start_os(self):
         if not system.is_running:
-            params = self.extract_system_params()
-            system.update_params(params)
+            system_params = self.extract_system_params()
+            system.update_params(system_params)
+
+            command_params = self.extract_command_params()
+            Command.update_params(command_params)
 
         if not self.system_was_started:
             self.redraw_speed_label()
@@ -372,11 +376,19 @@ class OS(QMainWindow):  # главное окно
 
     # endregion
 
+    # region Извлечение данных из полей
     def extract_system_params(self) -> SystemParams:
         """Извлечение параметров системы из полей ввода"""
         form = SystemParamsForm(self)
         params = form.clean()
         return params
+
+    def extract_command_params(self) -> CommandParams:
+        """Извлечение параметров команд из полей ввода"""
+        form = CommandParamsForm(self)
+        params = form.clean()
+        return params
+    # endregion
 
 
 if __name__ == "__main__":
