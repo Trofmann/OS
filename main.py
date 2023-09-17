@@ -134,6 +134,10 @@ class OS(QMainWindow):  # главное окно
         # endregion
 
         # region Ввод параметров системы
+        self.system_params_label = QLabel('Параметры системы', self)
+        self.system_params_label.move(50, 315)
+        self.system_params_label.setFixedWidth(200)
+
         self.memory_input_label = QLabel('Память системы', self)
         self.memory_input_label.move(50, 350)
         self.memory_input_label.setFixedWidth(100)
@@ -175,6 +179,36 @@ class OS(QMainWindow):  # главное окно
         ]
 
         # endregion
+
+        # region Ввод параметров команд
+        self.commands_params_label = QLabel('Параметры команд', self)
+        self.commands_params_label.move(50, 580)
+        self.commands_params_label.setFixedWidth(200)
+
+        self.compute_command_input_label = QLabel('Вычислительная', self)
+        self.compute_command_input_label.move(50, 620)
+        self.compute_command_input_label.setFixedWidth(100)
+
+        self.compute_command_input = QLineEdit(self)
+        self.compute_command_input.setValidator(QIntValidator())
+        self.compute_command_input.move(150, 620)
+        self.compute_command_input.setText('4')
+
+        self.io_command_input_label = QLabel('Ввод/вывод', self)
+        self.io_command_input_label.move(50, 670)
+        self.io_command_input_label.setFixedWidth(100)
+
+        self.io_command_input = QLineEdit(self)
+        self.io_command_input.setValidator(QIntValidator())
+        self.io_command_input.move(150, 670)
+        self.io_command_input.setText('40')
+
+        self.task_params_inputs = [
+            self.compute_command_input, self.io_command_input
+        ]
+        # endregion
+
+        self.params_inputs = self.system_params_inputs + self.task_params_inputs
 
         # region Таблица процессов
         self.processes_table = QTableWidget(self)
@@ -333,7 +367,7 @@ class OS(QMainWindow):  # главное окно
 
     def set_system_params_input_disabled(self, value: bool = True):
         """Блокируем или разблокируем поля ввода, активные только при выключенной системе"""
-        for input_ in self.system_params_inputs:
+        for input_ in self.params_inputs:
             input_.setDisabled(value)
 
     # endregion
