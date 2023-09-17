@@ -16,6 +16,16 @@ class CPU(object):
         processes = scheduler.get_processes()
         return sum([proc.get_used_memory() for proc in processes])
 
+    def _perform_tact(self, process: Process):
+        """Выполнение такта"""
+        # Выполняем текущий процесс
+        process.perform_tact()
+        # Выполняем все заблокированные процессы
+        blocked_processes = scheduler.get_blocked_processes()
+        for blocked_process in blocked_processes:
+            blocked_process.perform_tact()
+        self.system.send_process_changed_data()
+
     def perform_frame(self, process: Process):
         """Выполнение фрейма"""
         if process:
@@ -36,13 +46,10 @@ class CPU(object):
                     tacts_left = self.system.kvant - 1 - cur_tact  # Количество тактов, оставшихся в кванте
                     if command.tacts_left <= tacts_left:  # Команда влезает в квант
                         # Выполним её
-                        process.perform_tact()
+                        self._perform_tact(process)
                 else:
                     # Команда уже выполнялась, просто продолжим выполнение задачи
-                    process.perform_tact()
-                self.system.send_process_changed_data()
-            if process in scheduler.get_processes() and process.is_active:
-                process.set_ready()
+                    self._perform_tact(process)
             if prematurely_finished:
                 self.system.send_process_changed_data()
 

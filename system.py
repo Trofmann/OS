@@ -49,15 +49,22 @@ class System(QThread):
                     if process.current_command_is_io:
                         # Заблокируем
                         process.set_blocked()
-                        self.send_process_changed_data()  # Если процесс сразу же заблокируется, отрисуем его
+                        self.send_process_changed_data()
                     else:
                         process.set_active()
                         self.send_process_changed_data()
                         break
                 # endregion
-
                 self.cpu.perform_frame(process)
-                # self.process_data_changed.emit()  # Отправляем
+                if process in scheduler.get_processes() and process.is_active:
+                    process.set_ready()
+                    self.send_process_changed_data()
+
+                time.sleep(self.speed / 1000)
+                blocked_processes = scheduler.get_blocked_processes()
+                for blocked_process in blocked_processes:
+                    blocked_process.perform_tact()
+                self.send_process_changed_data()
 
     def send_process_changed_data(self) -> None:
         """Отправка сигнала"""
