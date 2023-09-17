@@ -39,36 +39,38 @@ class CPU(object):
             else:
                 process.set_active()
                 break
-        prematurely_finished = False  # Флаг для отправки сигнала, если фрейм завершился преждевременно
-        for cur_tact in range(self.system.kvant):
-            if process not in scheduler.get_processes():  # Проверяем, не удалили ли процесс
-                # Удалили, выходим, фрейм завершаем
-                prematurely_finished = True
-                break
-            if not process.is_active:
-                # Процесс или завершился в предыдущем такте
-                prematurely_finished = True
-                break  # Считаем фрейм выполненным преждевременно
-            time.sleep(self.system.speed / 1000)  # Такт
-            command = process.current_command
-            if command.not_started:
-                # Команда не выполнялась, проверим её полностью
-                tacts_left = self.system.kvant - 1 - cur_tact  # Количество тактов, оставшихся в кванте
-                if command.is_io:
-                    # В процессе выполнения кванта встретили команду ввода вывода
-                    process.set_blocked()  # заблокируем процесс
+        if process:
+            prematurely_finished = False  # Флаг для отправки сигнала, если фрейм завершился преждевременно
+            for cur_tact in range(self.system.kvant):
+                if process not in scheduler.get_processes():  # Проверяем, не удалили ли процесс
+                    # Удалили, выходим, фрейм завершаем
                     prematurely_finished = True
-                    break  # завершим фрейм
-                if command.tacts_left <= tacts_left:  # Команда влезает в квант
-                    # Выполним её
+                    break
+                if not process.is_active:
+                    # Процесс или завершился, или заблокировался в предыдущем такте
+                    prematurely_finished = True
+                    break  # Считаем фрейм выполненным преждевременно
+                time.sleep(self.system.speed / 1000)  # Такт
+                command = process.current_command
+                if command.not_started:
+                    # Команда не выполнялась, проверим её полностью
+                    tacts_left = self.system.kvant - 1 - cur_tact  # Количество тактов, оставшихся в кванте
+                    if command.is_io:
+                        # В процессе выполнения кванта встретили команду ввода вывода
+                        process.set_blocked()  # заблокируем процесс
+                        prematurely_finished = True
+                        break  # завершим фрейм
+                    if command.tacts_left <= tacts_left:  # Команда влезает в квант
+                        # Выполним её
+                        process.perform_tact()
+                else:
+                    # Команда выполнялась, просто продолжим выполнение задачи
                     process.perform_tact()
-            else:
-                # Команда выполнялась, просто продолжим выполнение задачи
-                process.perform_tact()
-            self.system.tact_completed.emit()
-
-        if prematurely_finished:
-            self.system.tact_completed.emit()
+                self.system.tact_completed.emit()
+            if process in scheduler.get_processes() and process.is_active:
+                process.set_ready()
+            if prematurely_finished:
+                self.system.tact_completed.emit()
 
     @property
     def processes_count(self) -> int:

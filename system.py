@@ -44,7 +44,7 @@ class System(QThread):
                 # self.cpu.perform_tact()
                 # # print(self.get_empty_memory()) # Для отладки
                 self.cpu.perform_frame()
-                self.tact_completed.emit()  # Отправляем
+                # self.tact_completed.emit()  # Отправляем
 
     def increase_speed(self) -> None:
         """Увеличение скорости"""

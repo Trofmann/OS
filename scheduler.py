@@ -1,5 +1,4 @@
-from typing import List
-from typing import Union
+from typing import List, Union
 
 from process import Process
 
@@ -27,11 +26,24 @@ class Scheduler(object):
         # TODO: сделать в соответствии с вариантом
         pass
 
+    def filter_processes(self, states: List[int]) -> List[Process]:
+        """Фильтрация процессов по состоянию"""
+        return list(filter(lambda p: p.state in states, self._processes))
+
+    def get_ready_processes(self) -> List[Process]:
+        """Процессы в состоянии 'Готов'"""
+        return self.filter_processes([Process.STATE_READY])
+
+    def get_blocked_processes(self) -> List[Process]:
+        """Процессы в состоянии 'Заблокирован'"""
+        return self.filter_processes([Process.STATE_BLOCKED])
+
     def get_performing_process(self) -> Union[Process, None]:
         """Получить процесс для исполнения"""
-        if self._processes:
-            # Пока заглушка в виде первого процесса
-            return self._processes[0]
+        ready_processes = self.get_ready_processes()
+        if ready_processes:
+            # Первый готовый процесс
+            return ready_processes[0]
         return None
 
     def remove_finished_processes(self) -> bool:
@@ -59,10 +71,6 @@ class Scheduler(object):
             self._processes.remove(found[0])
             error = False
         return error
-
-    def get_blocked_processes(self) -> List[Process]:
-        """Процессы в статусе 'Заблокирован'"""
-        return list(filter(lambda p: p.is_blocked, self._processes))
 
 
 scheduler = Scheduler()
