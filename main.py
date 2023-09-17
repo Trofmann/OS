@@ -67,7 +67,7 @@ class OS(QMainWindow):  # главное окно
         self.set_system_button_disabled(True)
 
         self.exit_button = QPushButton('Выйти', self)
-        self.exit_button.move(50, 250)
+        self.exit_button.move(50, 280)
         self.exit_button.setFixedWidth(200)
         self.exit_button.setToolTip('Выйти')
         self.exit_button.clicked.connect(self.exit)
@@ -146,6 +146,19 @@ class OS(QMainWindow):  # главное окно
         self.kvant_input.move(150, 400)
         self.kvant_input.setText('20')
 
+        self.t_next_input_label = QLabel('Выбор процесса', self)
+        self.t_next_input_label.move(50, 450)
+        self.t_next_input_label.setFixedWidth(100)
+
+        self.t_next_input = QLineEdit(self)
+        self.t_next_input.setValidator(QIntValidator())
+        self.t_next_input.move(150, 450)
+        self.t_next_input.setText('4')
+
+        self.system_params_inputs = [
+            self.memory_input, self.kvant_input, self.t_next_input
+        ]
+
         self.processes_table = QTableWidget(self)
         self.processes_table.setColumnCount(5)
         self.processes_table.setRowCount(0)
@@ -168,8 +181,12 @@ class OS(QMainWindow):  # главное окно
             kvant = self.kvant_input.text()
             kvant = int(kvant) if kvant else 20
 
+            t_next = self.t_next_input.text()
+            t_next = int(t_next) if t_next else 4
+
             system.memory = from_megabytes_to_bytes(memory)
             system.kvant = kvant
+            system.t_next = t_next
 
         if not self.system_was_started:
             self.redraw_speed_label()
@@ -299,8 +316,8 @@ class OS(QMainWindow):  # главное окно
 
     def set_system_params_input_disabled(self, value: bool = True):
         """Блокируем или разблокируем поля ввода, активные только при выключенной системе"""
-        self.memory_input.setDisabled(value)
-        self.kvant_input.setDisabled(value)
+        for input_ in self.system_params_inputs:
+            input_.setDisabled(value)
 
 
 if __name__ == "__main__":
