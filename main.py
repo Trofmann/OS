@@ -203,12 +203,12 @@ class OS(QMainWindow):  # главное окно
         self.io_command_input.move(150, 670)
         self.io_command_input.setText('40')
 
-        self.task_params_inputs = [
+        self.command_params_inputs = [
             self.compute_command_input, self.io_command_input
         ]
         # endregion
 
-        self.params_inputs = self.system_params_inputs + self.task_params_inputs
+        self.params_inputs = self.system_params_inputs + self.command_params_inputs
 
         # region Таблица процессов
         self.processes_table = QTableWidget(self)
