@@ -39,6 +39,7 @@ class CPU(object):
                 self.system.send_process_changed_data()  # Если процесс сразу же заблокируется, отрисуем его
             else:
                 process.set_active()
+                self.system.send_process_changed_data()
                 break
         if process:
             prematurely_finished = False  # Флаг для отправки сигнала, если фрейм завершился преждевременно
