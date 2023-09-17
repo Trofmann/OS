@@ -57,11 +57,6 @@ class CPU(object):
                 if command.not_started:
                     # Команда не выполнялась, проверим её полностью
                     tacts_left = self.system.kvant - 1 - cur_tact  # Количество тактов, оставшихся в кванте
-                    if command.is_io:
-                        # В процессе выполнения кванта встретили команду ввода вывода
-                        process.set_blocked()  # заблокируем процесс
-                        prematurely_finished = True
-                        break  # завершим фрейм
                     if command.tacts_left <= tacts_left:  # Команда влезает в квант
                         # Выполним её
                         process.perform_tact()
