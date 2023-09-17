@@ -23,8 +23,7 @@ class Scheduler(object):
 
     def _reorder_processes(self):
         """Пересортировка процессов"""
-        # TODO: сделать в соответствии с вариантом
-        pass
+        self._processes.sort(key=lambda p: p.priority, reverse=True)
 
     def filter_processes(self, states: List[int]) -> List[Process]:
         """Фильтрация процессов по состоянию"""
@@ -40,6 +39,7 @@ class Scheduler(object):
 
     def get_performing_process(self) -> Union[Process, None]:
         """Получить процесс для исполнения"""
+        self._reorder_processes()
         ready_processes = self.get_ready_processes()
         if ready_processes:
             # Первый готовый процесс
@@ -48,15 +48,16 @@ class Scheduler(object):
 
     def remove_finished_processes(self) -> bool:
         """Удаление завершённых процессов"""
-        completed = False  # Задача завершена
-        old_count = len(self._processes)
-        processes = [p for p in self._processes if not p.is_finished]
-        self._processes = processes
-        if old_count != len(self._processes):
-            # Количество изменилось, а значит один из процессов завершился, надо отсортировать
-            self._reorder_processes()
-            completed = True
-        return completed
+        pass
+        # completed = False  # Задача завершена
+        # old_count = len(self._processes)
+        # processes = [p for p in self._processes if not p.is_finished]
+        # self._processes = processes
+        # if old_count != len(self._processes):
+        #     # Количество изменилось, а значит один из процессов завершился, надо отсортировать
+        #     self._reorder_processes()
+        #     completed = True
+        # return completed
 
     @property
     def processes_count(self) -> int:

@@ -44,6 +44,7 @@ class System(QThread):
                     # TODO: на выбор процесса тратится определённое количество тактов
                     # Выбираем первый в очереди процесс, у которого следующая команда не является командой ввода-вывода
                     process = scheduler.get_performing_process()  # Получаем процесс
+                    self.send_process_changed_data()
                     if not process:
                         break
                     if process.current_command_is_io:
