@@ -43,10 +43,11 @@ class System(QThread):
         """Запуск системы"""
         while True:
             if self.is_running:
+                # Выжидаем время, затраченное на загрузку задач
                 self.sleep_for_tacts(self.new_tasks_count * self.t_load)
                 self.new_tasks_count = 0
 
-                # region Поиск подходящего процесс
+                # region Поиск подходящего процесса
                 while True:
                     # TODO: на выбор процесса тратится определённое количество тактов
                     # Выбираем первый в очереди процесс, у которого следующая команда не является командой ввода-вывода
@@ -67,15 +68,19 @@ class System(QThread):
                 # endregion
 
                 self.cpu.perform_frame(process)
-                if process in scheduler.get_processes() and process.is_active:
+
+                # Выполнение фрейма завершилось, установим процесс в статус 'Готов'
+                if process in scheduler.get_processes() and process.is_active:  # Проверим, не удалили ли его
                     process.set_ready()
                     self.send_process_changed_data()
 
+                # region Обработка заблокированных процессов
                 self.sleep_for_tacts()
                 blocked_processes = scheduler.get_blocked_processes()
                 for blocked_process in blocked_processes:
                     blocked_process.perform_tact()
                 self.send_process_changed_data()
+                # endregion
 
     def sleep_for_tacts(self, count_: int = 1) -> None:
         time.sleep((self.speed * count_) / 1000)
@@ -121,7 +126,6 @@ class System(QThread):
                 setattr(self, attr, value)
             else:
                 raise Exception('У системы отсутствует такой параметр')
-
 
 
 system = System(
