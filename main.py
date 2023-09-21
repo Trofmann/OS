@@ -372,7 +372,6 @@ class OS(QMainWindow):  # главное окно
 
     def redraw_statistic(self):
         """Перерисовка статистики"""
-        print(1)
         self.statistic.setText(statistics.dump())
 
     # endregion
