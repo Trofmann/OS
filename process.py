@@ -107,6 +107,10 @@ class Process(object):
     def current_command(self):
         return self.task.current_command
 
+    @property
+    def commands_count(self) -> int:
+        return self.task.commands_count
+
 
 class ProcessFabric(object):
     @staticmethod

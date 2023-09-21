@@ -213,15 +213,17 @@ class OS(QMainWindow):  # главное окно
 
         # region Таблица процессов
         self.processes_table = QTableWidget(self)
-        self.processes_table.setColumnCount(5)
+        self.processes_table.setColumnCount(6)
         self.processes_table.setRowCount(0)
         self.processes_table.move(300, 100)
-        self.processes_table.setFixedWidth(1250)
+        self.processes_table.setFixedWidth(1200)
         self.processes_table.setFixedHeight(200)
-        self.processes_table.setHorizontalHeaderLabels(['uid', 'Статус', 'Объём памяти', 'Счётчик команд', 'Приоритет'])
+        self.processes_table.setHorizontalHeaderLabels([
+            'uid', 'Статус', 'Объём памяти', 'Счётчик команд', 'Всего команд', 'Приоритет'
+        ])
 
-        for i in range(5):
-            self.processes_table.setColumnWidth(i, 250)
+        for i in range(6):
+            self.processes_table.setColumnWidth(i, 200)
 
         # endregion
 
@@ -353,6 +355,7 @@ class OS(QMainWindow):  # главное окно
                 process.get_state_display(),
                 str(process.get_used_memory()),
                 str(process.task.current_command_index),
+                str(process.commands_count),
                 str(process.priority),
             ]
             for col, value in enumerate(row_data):

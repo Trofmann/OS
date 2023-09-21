@@ -40,6 +40,10 @@ class Task(object):
     def current_command(self) -> Command:
         return self.commands[self.current_command_index]
 
+    @property
+    def commands_count(self) -> int:
+        return len(self.commands)
+
 
 class TaskFabric(object):
     @staticmethod

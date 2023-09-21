@@ -49,7 +49,6 @@ class System(QThread):
 
                 # region Поиск подходящего процесса
                 while True:
-                    # TODO: на выбор процесса тратится определённое количество тактов
                     # Выбираем первый в очереди процесс, у которого следующая команда не является командой ввода-вывода
                     process = scheduler.get_performing_process()  # Получаем процесс
                     self.send_process_changed_data()
@@ -81,6 +80,8 @@ class System(QThread):
                     blocked_process.perform_tact()
                 self.send_process_changed_data()
                 # endregion
+
+                scheduler.remove_finished_processes()
 
     def sleep_for_tacts(self, count_: int = 1) -> None:
         time.sleep((self.speed * count_) / 1000)
