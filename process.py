@@ -17,11 +17,12 @@ class Process(object):
         4: 'Завершён',
     }
 
-    def __init__(self, task: Task, state: int = STATE_READY):
+    def __init__(self, task: Task, added_tact: int, state: int = STATE_READY):
         self.task = task
         self.task.process = self
         self.state = state
         self.uid = str(uuid4())
+        self.added_tact = added_tact  # Такт, на котором процесс был загружен в систему
 
     def check_state(self, state: int) -> bool:
         return self.state == state
@@ -114,6 +115,6 @@ class Process(object):
 
 class ProcessFabric(object):
     @staticmethod
-    def generate_random() -> Process:
+    def generate_random(added_tact: int) -> Process:
         task_ = TaskFabric.generate_random()
-        return Process(task_)
+        return Process(task_, added_tact)

@@ -37,15 +37,22 @@ class System(QThread):
 
         self.new_tasks_count = 0  # Служебное поле, хранящее количество новых загруженных задач
 
-        self._start_time = time.time()  # Время начала работы
+        self.tacts_count = 0  # Число выполненных тактов
+        self.system_tacks_count = 0  # Число системных тактов на системные затраты
+        self.completed_tasks_count = 0  # Число выполненных задач
 
     def run(self) -> None:
         """Запуск системы"""
         while True:
             if self.is_running:
-                # Выжидаем время, затраченное на загрузку задач
-                self.sleep_for_tacts(self.new_tasks_count * self.t_load)
+                # region Выжидаем время, затраченное на загрузку задач
+                tacts_for_tasks = self.new_tasks_count * self.t_load
+
+                self.system_tacks_count += tacts_for_tasks
+                self.tacts_count += tacts_for_tasks
+                self.sleep_for_tacts(tacts_for_tasks)
                 self.new_tasks_count = 0
+                # endregion
 
                 # region Поиск подходящего процесса
                 while True:
@@ -64,9 +71,13 @@ class System(QThread):
                         break
                 # На выбор процесса потратили такты
                 self.sleep_for_tacts(self.t_next)
+                self.system_tacks_count += self.t_next
+                self.tacts_count += self.t_next
                 # endregion
 
-                self.cpu.perform_frame(process)
+                frame_duration = self.cpu.perform_frame(process)
+
+                self.tacts_count += frame_duration
 
                 # Выполнение фрейма завершилось, установим процесс в статус 'Готов'
                 if process in scheduler.get_processes() and process.is_active:  # Проверим, не удалили ли его
@@ -81,7 +92,8 @@ class System(QThread):
                 self.send_process_changed_data()
                 # endregion
 
-                scheduler.remove_finished_processes()
+                finished_count = scheduler.remove_finished_processes(self.tacts_count)
+                self.completed_tasks_count += finished_count
 
     def sleep_for_tacts(self, count_: int = 1) -> None:
         time.sleep((self.speed * count_) / 1000)
@@ -108,16 +120,6 @@ class System(QThread):
         """Получение свободной памяти"""
         used_memory = self.get_used_memory()
         return self.memory - used_memory
-
-    @property
-    def process_count(self) -> int:
-        """Число загруженных заданий"""
-        return self.cpu.processes_count
-
-    @property
-    def working_time(self) -> float:
-        """Время работы"""
-        return time.time() - self._start_time
 
     def update_params(self, params: SystemParams) -> None:
         """Обновление параметров"""

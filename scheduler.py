@@ -46,10 +46,19 @@ class Scheduler(object):
             return ready_processes[0]
         return None
 
-    def remove_finished_processes(self) -> None:
+    def remove_finished_processes(self, current_tact: int) -> int:
         """Удаление завершённых процессов"""
-        processes = [p for p in self._processes if not p.is_finished]
+        from statistics import statistics
+        finished_count = 0
+        processes = []
+        for p in self._processes:
+            if p.is_finished:
+                finished_count += 1
+                statistics.add_process_data(p.added_tact, current_tact)
+            else:
+                processes.append(p)
         self._processes = processes
+        return finished_count
 
     @property
     def processes_count(self) -> int:

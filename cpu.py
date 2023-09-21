@@ -26,11 +26,13 @@ class CPU(object):
             blocked_process.perform_tact()
         self.system.send_process_changed_data()
 
-    def perform_frame(self, process: Process):
+    def perform_frame(self, process: Process) -> int:
         """Выполнение фрейма"""
+        duration = 0  # Длительность фрейма
         if process:
             prematurely_finished = False  # Флаг для отправки сигнала, если фрейм завершился преждевременно
             for cur_tact in range(self.system.kvant):
+                duration += 1
                 if process not in scheduler.get_processes():  # Проверяем, не удалили ли процесс
                     # Удалили, выходим, фрейм завершаем
                     prematurely_finished = True
@@ -52,6 +54,7 @@ class CPU(object):
                     self._perform_tact(process)
             if prematurely_finished:
                 self.system.send_process_changed_data()
+        return duration
 
     @property
     def processes_count(self) -> int:
