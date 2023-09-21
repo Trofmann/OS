@@ -29,8 +29,8 @@ class SystemStatisticsProxy(object):
     def _get_system_costs(self) -> str:
         """Системные затраты в процентах"""
         value = 0
-        if system.tacks_count:
-            value = round((system.system_tacks_count / system.tacks_count) * 100, 0)
+        if system.tacts_count:
+            value = round((system.system_tacks_count / system.tacts_count) * 100, 0)
         return f'{value} %'
 
     def _get_working_time(self) -> int:
@@ -46,7 +46,9 @@ class SystemStatisticsProxy(object):
         # Находится как среднестатистическое время, прошедшее с момента загрузки процесса в систему,
         # до его вывода из системы в связи с завершением
         durations = [data.duration for data in self._process_data]
-        return round(sum(durations) / len(durations), 2)
+        if durations:
+            return round(sum(durations) / len(durations), 2)
+        return 0
 
     def add_process_data(self, start: int, stop: int) -> None:
         self._process_data.append(ProcessStartStopData(start, stop))

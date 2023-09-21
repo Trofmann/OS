@@ -12,6 +12,7 @@ from params import SystemParams, CommandParams
 from process import Process
 from scheduler import scheduler
 from system import system
+from statistics import statistics
 from utils import from_bytes_to_megabytes
 
 
@@ -227,6 +228,14 @@ class OS(QMainWindow):  # главное окно
 
         # endregion
 
+        # region Статистика
+        self.statistic = QLabel(statistics.dump(), self)
+        self.statistic.move(800, 400)
+        self.statistic.setFixedHeight(200)
+        self.statistic.setFixedWidth(500)
+        system.statistics_changed.connect(self.redraw_statistic)
+        # endregion
+
         self.system_was_started = False
 
     # region Обработка нажатий кнопок
@@ -360,6 +369,11 @@ class OS(QMainWindow):  # главное окно
             ]
             for col, value in enumerate(row_data):
                 self.processes_table.setItem(row, col, QTableWidgetItem(value))
+
+    def redraw_statistic(self):
+        """Перерисовка статистики"""
+        print(1)
+        self.statistic.setText(statistics.dump())
 
     # endregion
 

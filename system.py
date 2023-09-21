@@ -12,6 +12,7 @@ from scheduler import scheduler
 class System(QThread):
     """Система"""
     process_data_changed = pyqtSignal()
+    statistics_changed = pyqtSignal()
 
     def __init__(self, memory: int, speed: float, kvant: int, t_next: int, t_init_io: int, t_end_io: int, t_load: int):
         super().__init__()
@@ -94,6 +95,7 @@ class System(QThread):
 
                 finished_count = scheduler.remove_finished_processes(self.tacts_count)
                 self.completed_tasks_count += finished_count
+                self.statistics_changed.emit()
 
     def sleep_for_tacts(self, count_: int = 1) -> None:
         time.sleep((self.speed * count_) / 1000)
