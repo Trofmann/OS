@@ -17,5 +17,9 @@ def load_new_task() -> bool:
 def clean_system() -> None:
     system.is_running = False
     system.cpu.performing_processes_index = 0  # Сброс счётчика
+    system.new_tasks_count = 0
+    system.tacts_count = 0
+    system.system_tacks_count = 0
+    system.completed_tasks_count = 0
     scheduler.clean_processes()
     scheduler.completed_tasks_count = 0  # Сбрасываем счётчик
