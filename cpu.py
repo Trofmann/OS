@@ -10,12 +10,6 @@ class CPU(object):
         self.performing_processes_index = 0  # Индекс исполняемого процесса
         self.system = system_
 
-    def get_used_memory(self) -> int:
-        """Получение используемой памяти"""
-        # Используемая память процессора есть сумма памяти, занимаемой всем процессами
-        processes = scheduler.get_processes()
-        return sum([proc.get_used_memory() for proc in processes])
-
     def _perform_tact(self, process: Process):
         """Выполнение такта"""
         # Выполняем текущий процесс
@@ -56,7 +50,3 @@ class CPU(object):
                 self.system.send_process_changed_data()
         return duration
 
-    @property
-    def processes_count(self) -> int:
-        """Число загруженных заданий"""
-        return scheduler.processes_count

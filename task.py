@@ -18,18 +18,12 @@ class Task(object):
         """Выполнение такта"""
         command_finished = False  # Команда завершила выполнение
         self.commands[self.current_command_index].tacts_left -= 1
-        print(self.current_command_index, len(self.commands), self.current_command.type_)
+        # print(self.current_command_index, len(self.commands), self.current_command.type_)
         # Команда завершила своё исполнение, переместим указатель
         if self.commands[self.current_command_index].tacts_left <= 0:  # Для стоп-команды
             self.current_command_index += 1
             command_finished = True
         return command_finished
-
-    @property
-    def is_finished(self) -> bool:
-        """Признак завершения задачи"""
-        # Задача завершена, если дошли до конца
-        return self.current_command_index == len(self.commands)
 
     @property
     def current_command_is_io(self) -> bool:

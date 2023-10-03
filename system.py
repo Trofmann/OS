@@ -116,7 +116,7 @@ class System(QThread):
 
     def get_used_memory(self) -> int:
         """Используемая память"""
-        return self.cpu.get_used_memory()
+        return scheduler.get_used_memory()
 
     def get_empty_memory(self) -> int:
         """Получение свободной памяти"""

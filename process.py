@@ -81,9 +81,6 @@ class Process(object):
             except IndexError:  # Вышли за пределы списка команд, значит задача выполнена
                 self.set_finished()
 
-    def get_commands(self):
-        return self.task.commands
-
     @property
     def priority(self) -> int:
         """Приоритет процессора"""
@@ -93,11 +90,6 @@ class Process(object):
     def current_command_index(self) -> int:
         """Индекс текущей исполняемой команды"""
         return self.task.current_command_index
-
-    @property
-    def ready_time(self) -> int:
-        """Время нахождения в списке готовности (Простой процесса) в процентах от времени выполнения задания"""
-        return 0
 
     @property
     def current_command_is_io(self) -> bool:

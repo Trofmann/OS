@@ -22,4 +22,3 @@ def clean_system() -> None:
     system.system_tacks_count = 0
     system.completed_tasks_count = 0
     scheduler.clean_processes()
-    scheduler.completed_tasks_count = 0  # Сбрасываем счётчик

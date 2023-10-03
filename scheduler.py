@@ -8,7 +8,6 @@ class Scheduler(object):
 
     def __init__(self):
         self._processes = []  # type: List[Process]
-        self.completed_tasks_count = 0  # Число выполненных задач
 
     def append_process(self, process: Process) -> None:
         """Добавление процесса"""
@@ -60,11 +59,6 @@ class Scheduler(object):
         self._processes = processes
         return finished_count
 
-    @property
-    def processes_count(self) -> int:
-        """Число загруженных заданий"""
-        return len(self._processes)
-
     def remove_process(self, uid: str) -> bool:
         """Удаление процесса по uid"""
         error = True
@@ -73,6 +67,9 @@ class Scheduler(object):
             self._processes.remove(found[0])
             error = False
         return error
+
+    def get_used_memory(self) -> int:
+        return sum([proc.get_used_memory() for proc in self._processes])
 
 
 scheduler = Scheduler()
