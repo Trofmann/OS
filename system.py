@@ -66,6 +66,7 @@ class System(QThread):
                         # Заблокируем
                         process.set_blocked()
                         self.send_process_changed_data()
+                        break
                     else:
                         process.set_active()
                         self.send_process_changed_data()
@@ -76,9 +77,9 @@ class System(QThread):
                 self.tacts_count += self.t_next
                 # endregion
 
-                frame_duration = self.cpu.perform_frame(process)
-
-                self.tacts_count += frame_duration
+                if process:
+                    frame_duration = self.cpu.perform_frame(process)
+                    self.tacts_count += frame_duration
 
                 # Выполнение фрейма завершилось, установим процесс в статус 'Готов'
                 if process in scheduler.get_processes() and process.is_active:  # Проверим, не удалили ли его

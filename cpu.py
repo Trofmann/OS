@@ -23,30 +23,29 @@ class CPU(object):
     def perform_frame(self, process: Process) -> int:
         """Выполнение фрейма"""
         duration = 0  # Длительность фрейма
-        if process:
-            prematurely_finished = False  # Флаг для отправки сигнала, если фрейм завершился преждевременно
-            for cur_tact in range(self.system.kvant):
-                duration += 1
-                if process not in scheduler.get_processes():  # Проверяем, не удалили ли процесс
-                    # Удалили, выходим, фрейм завершаем
-                    prematurely_finished = True
-                    break
-                if not process.is_active:
-                    # Процесс или завершился, или заблокировался в предыдущем такте
-                    prematurely_finished = True
-                    break  # Считаем фрейм выполненным преждевременно
-                self.system.sleep_for_tacts()
-                command = process.current_command
-                if command.not_started:
-                    # Команда не выполнялась, проверим её полностью
-                    tacts_left = self.system.kvant - 1 - cur_tact  # Количество тактов, оставшихся в кванте
-                    if command.tacts_left <= tacts_left:  # Команда влезает в квант
-                        # Выполним её
-                        self._perform_tact(process)
-                else:
-                    # Команда уже выполнялась, просто продолжим выполнение задачи
+        prematurely_finished = False  # Флаг для отправки сигнала, если фрейм завершился преждевременно
+        for cur_tact in range(self.system.kvant):
+            duration += 1
+            if process not in scheduler.get_processes():  # Проверяем, не удалили ли процесс
+                # Удалили, выходим, фрейм завершаем
+                prematurely_finished = True
+                break
+            if not process.is_active:
+                # Процесс или завершился, или заблокировался в предыдущем такте
+                prematurely_finished = True
+                break  # Считаем фрейм выполненным преждевременно
+            self.system.sleep_for_tacts()
+            command = process.current_command
+            if command.not_started:
+                # Команда не выполнялась, проверим её полностью
+                tacts_left = self.system.kvant - 1 - cur_tact  # Количество тактов, оставшихся в кванте
+                if command.tacts_left <= tacts_left:  # Команда влезает в квант
+                    # Выполним её
                     self._perform_tact(process)
-            if prematurely_finished:
-                self.system.send_process_changed_data()
+            else:
+                # Команда уже выполнялась, просто продолжим выполнение задачи
+                self._perform_tact(process)
+        if prematurely_finished:
+            self.system.send_process_changed_data()
         return duration
 
